@@ -1,3 +1,4 @@
+import logging
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -5,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 class SoupContentParser:
     def __init__(self, driver):
         self.driver = driver
+        logging.basicConfig(level=logging.INFO)
 
     def get_phone(self, soup_content):
         try:
@@ -12,21 +14,21 @@ class SoupContentParser:
             phone_button = self.driver.find_element(By.XPATH, "//button[contains(text(),'Показать номер')]")
             phone_button.click()
 
-            print("Clicked the button to reveal phone number")
+            logging.info("Clicked the button to reveal phone number")
 
             phone_link = WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, "//li[contains(@class, 'gp_phoneList')]//a[contains(@href, 'tel:')]"))
             )
 
-            print("Phone number element is present")
+            logging.info("Phone number element is present")
 
             phone = phone_link.text.strip()
 
-            print(f"Extracted phone: {phone}")
+            logging.info(f"Extracted phone: {phone}")
 
             return phone
         except Exception as e:
-            print(f"Error extracting phone number: {e}")
+            logging.info(f"Error extracting phone number: {e}")
             return ""
 
     def get_name(self, soup_content):
@@ -48,7 +50,7 @@ class SoupContentParser:
 
             return address_text
         except Exception as e:
-            print(f"Error extracting address: {e}")
+            logging.info(f"Error extracting address: {e}")
             return ""
 
     def get_landmarks(self, soup_content):
