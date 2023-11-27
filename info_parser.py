@@ -2,7 +2,8 @@ import os
 import json
 import argparse
 import pandas as pd
-from time import sleep
+import logging
+
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from soup_parser import SoupContentParser
@@ -12,6 +13,7 @@ class Parser:
     def __init__(self, driver):
         self.driver = driver
         self.soup_parser = SoupContentParser(driver)  # Pass the driver to SoupContentParser
+        logging.basicConfig(level=logging.INFO)
 
     def parse_data(self, hrefs, type_org):
         self.driver.maximize_window()
@@ -22,7 +24,7 @@ class Parser:
         for organization_url in hrefs:
             try:
                 self.driver.get(organization_url)
-                sleep(3)
+                # sleep(3)
                 soup = BeautifulSoup(self.driver.page_source, "lxml")
                 org_id += 1
                 name = self.soup_parser.get_name(soup)
@@ -41,7 +43,6 @@ class Parser:
 
                 print(f'Данные добавлены, id - {org_id}')
 
-                sleep(1)
             except Exception as e:
                 print('Exception:', e)
 
